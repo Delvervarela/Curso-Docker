@@ -1,0 +1,34 @@
+## Instalacion de minikube para el manejo de kubernetes de forma local
+winget install Kubernetes.minikube 
+
+## Para iniciar minikube
+minikube start
+
+## para obtener los nodos que estan disponibles
+kubectl get nodes
+
+## Nos posicionamos en la carpeta minikube y ejecutamos el siguiente comando
+kubectl apply -f 01-hello-app-deployment.yaml
+
+kubectl get all
+
+## Escalando la app
+kubectl scale --replicas=5 deployment/hello
+
+## creacion de un servicio para ver la app
+cat 02-hello-app-service-node-port.yaml
+cat 01 ""
+kubectl get pods
+kubectl apply -f 02-hello-app-service-node-port.yaml
+describe svc hello
+
+minikube status
+kubectl get pods
+
+kubectl scale --replicas=5 deployment/hello
+kubctl get pods
+kubectl describe pod "nombre del pod"
+
+## rescribir el label del pod
+kubectl label pod "nombre del pod" role=udemy --overwrite
+

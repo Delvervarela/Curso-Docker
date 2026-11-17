@@ -1,0 +1,76 @@
+## Creacion de las MV para el manager y los workers, esto seria arquitectura master/slave
+docker-machine create manager1
+
+
+docker-machine create worker1
+docker-machine create worker2
+
+docker-machine ls para ver el estado de las maquinas
+
+docker-machine ssh manager1 - para tener una conexion directa en la mv de manager1
+dentro de manager1:
+    ifconfig se copia la direccion ip de eth1
+    docker swarm init --advertise-addr "ip extraida"
+    se copia el comando que nos dio esa ejecucion
+    logout 
+
+
+docker-machine ssh worker1
+    se paga el comando que nos dio la ejecucion en manager1
+    logout
+
+
+docker-machine ssh worker2
+    se paga el comando que nos dio la ejecucion en manager1
+    logout
+
+
+docker-machine ssh manager1
+    docker node ls #lista los nodos que estan conectados al swarm
+    logout
+
+docker-machine ssh manager1
+    docker service create --replicas 1 --name helloworld alpine ping docker.com
+    docker service ps helloworld
+    logout
+
+
+##Escalacion
+    docker-machine ssh manager1
+    docker service ls  
+    docker service scale "id del helloworld" = 3 #el 3 es el numero de replicas
+    docker service ps helloworld
+    logout
+
+
+docker-machine ssh manager
+    docker service create --replicas 3 --name redis --update-delay 10s redis:3.0.6
+    docker servie ps redis
+    docker servic inspect --pretty redis
+    docker service update --image redis:3.0.7 redis
+    docker service ps redis
+    logout
+
+
+
+docker-machine ssh manager1
+    docker service create --name my_web --publish published=8080,target=80 --replicas 2 nginx
+    docker service ls
+    docker service ps my_web
+    curl localhost:8080
+
+
+se abrieron tres terminales para cada una de las MV
+manager1 hace un curl para verificar que los workers respondan
+
+para verificar las peticiones en los workers es con:
+    docker logs -f
+
+docker-machine ssh manager1
+    se hace un docker service rm "iamgenes de los servicios"
+    logout
+
+docker machine stop para parar las MV
+
+
+
